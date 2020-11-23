@@ -1,0 +1,91 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Image</title>
+        <link rel="stylesheet" href="{% static 'imageupload/css/bootstrap.css' %}">
+    </head>
+    <style>
+        img{
+            max-width: 100%;
+            max-height: 100%;
+            display: block; /* remove extra space below image */
+        }
+        .box{
+            width: 250px;
+            border: 5px solid black;
+        }
+        .box.large{
+            height: 300px;
+        }
+        .box.small{
+            height: 100px;
+        }
+    </style>
+    <body>
+        <div class="container mt-5">
+            <!-- <form  method="POST"  enctype="multipart/form-data">
+              {% csrf_token %}
+                  <input type="file" id="inputFile">
+                  <button id="submit">Add</button>
+              </form> -->
+              <input type='file' accept='image/*' id='input_img' onchange='openFile(event)'><br>
+              <div class="card-group">
+                  <div class="row">
+                      <div class="card col-md-6">
+                          <img class="card-img-top" id="output" alt="">
+                      </div>
+                      <div class="card col-md-6">
+                          <img class="card-img-top" id="ajax_resp" alt="">
+                      </div>
+                  </div>
+              </div>
+            <!-- <img id='output' style="height:100px; width:100px;">
+            <img id='ajax_resp' style="height:100px; width:100px;"> -->
+        </div>
+        <div class="container mt-5" id="tile_option">
+            <div class="row">
+
+                <div class="col-md-2 alert alert-primary box small" onclick="optionSelect(1)">
+                    <img src="{% static 'imageupload/img/tile_1.jpg' %}"style="width: 100%" alt="">
+                </div>
+                <div class="col-md-2 alert alert-primary box small" onclick="optionSelect(2)">
+                    <img src="{% static 'imageupload/img/tile_2.jpg' %}"style="width: 100%" alt="">
+                </div>
+                <div class="col-md-2 alert alert-primary box small" onclick="optionSelect(3)">
+                    <img src="{% static 'imageupload/img/tile_3.jpg' %}"style="width: 100%" alt="">
+                </div>
+                <div class="col-md-2 alert alert-primary box small" onclick="optionSelect(4)">
+                    <img src="{% static 'imageupload/img/tile_4.jpg' %}"style="width: 100%" alt="">
+                </div>
+                <div class="col-md-2 alert alert-primary box small" onclick="optionSelect(5)">
+                    <img src="{% static 'imageupload/img/tile_5.jpg' %}"style="width: 100%" alt="">
+                </div>
+                <div class="col-md-2 alert alert-primary box small" onclick="optionSelect(6)">
+                    <img src="{% static 'imageupload/img/tile_6.jpg' %}"style="width: 100%" alt="">
+                </div>
+
+            </div>
+        </div>
+    </body>
+    <script src="{% static 'imageupload/js/jquery.js' %}"></script>
+    <script src="{% static 'imageupload/js/bootstrap.js' %}"></script>
+    <script src="{% static 'imageupload/js/popper.js' %}"></script>
+    <script>
+        function optionSelect(val){
+            var ajax_out = document.getElementById('ajax_resp');
+            console.log(val);
+            $.ajax({
+              url : "{% url 'process_img' %}", // the endpoint,commonly same url
+              type : "POST", // http method
+              data : { option: val},
+                  // handle a successful response
+              success : function(json) {
+              ajax_out.src = json.image;
+              }
+            });
+        }
+    </script>
+    {% include 'imageupload/js.html' %}
+</html>

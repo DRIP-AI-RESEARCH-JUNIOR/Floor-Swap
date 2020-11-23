@@ -1,0 +1,67 @@
+<!-- <script type="text/javascript">
+$("#submit").click(function(e) {
+    e.preventDefault();
+    var image = $('#inputFile').val();
+    console.log(image);
+    var reader = new FileReader();
+    reader.onload = function(){
+      var dataURL = reader.result;
+      console.log(dataURL);
+      //var output = document.getElementById('output');
+      console.log(reader);
+      console.log(output);
+      //output.src = dataURL;
+    };
+
+
+//This is the Ajax post.Observe carefully. It is nothing but details of where_to_post,what_to_post
+    // $.ajax({
+    //     url : "{% url 'process_img' %}", // the endpoint,commonly same url
+    //     type : "POST", // http method
+    //     data : { csrfmiddlewaretoken : csrftoken,
+    //     icon: image
+    //     }, // data sent with the post request
+    //         // handle a successful response
+    //         success : function(json) {
+    //         console.log(json); // another sanity check
+    //         },
+    //         // handle a non-successful response
+    //         error : function(xhr,errmsg,err) {
+    //         console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+    //         }
+    //     });
+});
+</script> -->
+
+<script type="text/javascript">
+var tile_option = document.getElementById('tile_option');
+tile_option.style.display = 'none';
+var openFile = function(file) {
+var input = file.target;
+
+var reader = new FileReader();
+
+reader.onload = function(){
+  var dataURL = reader.result;
+  var output = document.getElementById('output');
+  var ajax_out = document.getElementById('ajax_resp');
+  $.ajax({
+      url : "{% url 'process_img' %}", // the endpoint,commonly same url
+      type : "POST", // http method
+      data : { icon: dataURL},
+          // handle a successful response
+      success : function(json) {
+        ajax_out.src = json.image;
+        output.src = dataURL;
+        tile_option.style.display = 'block';
+      },
+      // handle a non-successful response
+      error : function(xhr,errmsg,err) {
+      console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+      }
+      });
+};
+reader.readAsDataURL(input.files[0]);
+};
+
+</script>
