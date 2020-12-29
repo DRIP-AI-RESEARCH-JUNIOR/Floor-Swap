@@ -836,15 +836,40 @@ def tiles_generator(path, pred):
     # tile = cv2.imread('/content/REVER-TILES-encaustic-tile-COROLLA-022.1-four-tile-600px-80-500x500.jpg')
     tile = cv2.imread(path)
 
-    tile = cv2.resize(tile, (25, 25), interpolation = cv2.INTER_NEAREST)
+    tile = cv2.resize(tile, (1250, 1250), interpolation = cv2.INTER_NEAREST)
     t_h, t_w, _ = tile.shape
 
     f_h, f_w= pred.shape
-    r_h, r_w = (f_h//t_h)+1, (f_w//t_w)+1
+    r_h, r_w = (40*f_h//t_h)+10, (40*f_w//t_w)+10
 
-    empt_floor = np.zeros([f_h, f_w, 3], dtype=np.uint8)
+    # empt_floor = np.zeros([f_h, f_w, 3], dtype=np.uint8)
     filled_tiles = np.tile(tile, (r_h, r_w, 1))
+    frame = filled_tiles
+    h, w, _ = frame.shape
+    print("Original height : {}, original width : {}".format(h, w))
+
+    # Locate points of the documents or object which you want to transform
+    # pts1 = np.float32([[700, 0], [w - 700, 0], [0, h - 900], [w, h - 900]])
+    pts1 = np.float32([[w/5,200], [4*w/5, 200], [0, 400], [w, 400]])
+    pts2 = np.float32([[0, 0], [h, 0], [0, w], [h, w]])
+
+    # Apply Perspective Transform Algorithm
+    matrix = cv2.getPerspectiveTransform(pts2, pts1)
+    result = cv2.warpPerspective(frame, matrix, (w, h))
+    # Wrap the transformed image
+    center_w, center_h = int(w / 2), int(h / 2)
+    # w_l, w_r, h_b, h_t = center_w - 300, center_w + 300, center_h - 300, center_h + 300
+    # crop_img = result[0:270, int(2*w/6):w]
+    crop_img = result[0:h//70, center_w-9000:center_w+9000]
+    # crop_img = cv2.resize(crop_img, (h, w), interpolation=cv2.INTER_AREA)
+    print("Initial_crop_img :", crop_img.shape)
 
     #crop
-    filled_tiles = filled_tiles[0:f_h, 0:f_w, :]
+    # filled_tiles = crop_img[0:f_h, 0:f_w, :]
+    filled_tiles = cv2.resize(crop_img, (f_w, f_h), interpolation = cv2.INTER_LINEAR)
+    # print("crop_img_shape :",not_req.shape)
+    # print("Crop_img_type :", type(not_req))
+    # filled_tiles = filled_tiles[0:f_h, 0:f_w, :]
+    # print("Filled_tiles", filled_tiles.shape)
+    # print("Filled_tiles_type :", type(filled_tiles))
     return filled_tiles

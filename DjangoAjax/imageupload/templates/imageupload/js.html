@@ -45,6 +45,7 @@ reader.onload = function(){
   var dataURL = reader.result;
   var output = document.getElementById('output');
   var ajax_out = document.getElementById('ajax_resp');
+<!--  var ajax_out_tile = document.getElementById('ajax_resp_tile');-->
   $.ajax({
       url : "{% url 'process_img' %}", // the endpoint,commonly same url
       type : "POST", // http method
@@ -52,6 +53,8 @@ reader.onload = function(){
           // handle a successful response
       success : function(json) {
         ajax_out.src = json.image;
+<!--        ajax_out_tile.src = json.tiles;-->
+        console.log(json.tiles);
         output.src = dataURL;
         tile_option.style.display = 'block';
       },

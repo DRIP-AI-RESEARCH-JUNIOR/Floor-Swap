@@ -31,17 +31,22 @@ def process_img(request):
         img_data = bytes(request.POST['icon'], 'ascii')
         z = img_data[img_data.find(b'/9'):]
         im = Image.open(io.BytesIO(base64.b64decode(z))).convert('RGB')
+        width, height = im.size
+        im = im.resize((width//3, height//3))
         pred, img_original = pred_evaluator(im)
         predicted_image = pred
         original_image = img_original
         filled_tiles = tiles_generator(file_path, pred)
+        print("Filled tile", filled_tiles.shape)
         final = swapperTile(pred, img_original, filled_tiles)
         image_url = url_Generator(final)
-        return JsonResponse({'status':'success', 'image':image_url})
+        tile_url = url_Generator(filled_tiles)
+        return JsonResponse({'status':'success', 'image':image_url, "tiles":tile_url})
     if (request.POST.get('option')):
         option = int(request.POST['option'])
         file_path = staticfiles_storage.path("imageupload/img/Tile_"+str(option)+".jpg")
         filled_tiles = tiles_generator(file_path, predicted_image)
         final = swapperTile(predicted_image, original_image, filled_tiles)
         image_url = url_Generator(final)
-        return JsonResponse({'status': 'success', 'image': image_url})
+        tile_url = url_Generator(filled_tiles)
+        return JsonResponse({'status': 'success', 'image': image_url, "tiles":tile_url})
