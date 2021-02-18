@@ -7,7 +7,7 @@ Swapping the Floor texture from the image of a House.
 gdown --id 157o_6G53brC3t9PwYaR9Yz416J8kxmT9
 ```
 
-### Demonstration
+### Execution
 
 ```
 python main.py --t <path to tile image> --w <path to weights folder> --i <path to input image> --o <path of output image>
